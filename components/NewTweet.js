@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
 export default function NewTweet() {
   const [content, setContent] = useState("");
   const { data: session } = useSession();
+  const router = new useRouter();
 
   if (!session || !session.user) return null;
 
@@ -17,7 +19,7 @@ export default function NewTweet() {
           return;
         }
 
-        fetch("/api/tweet", {
+        await fetch("/api/tweet", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -26,6 +28,8 @@ export default function NewTweet() {
             content,
           }),
         });
+
+        router.reload(window.location.pathname);
       }}
     >
       <div className="flex">
